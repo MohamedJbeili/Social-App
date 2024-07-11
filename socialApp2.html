@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social App</title>
+  <!-- import Bootstrap -->
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <!-- import Axios -->
+  <script src="node_modules/axios/dist/axios.min.js"></script>
+  <style>
+    #add {
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        font-size: 4rem;
+        z-index: 1000;
+        bottom: 1rem;
+        right: 3rem;
+        width: 70px;
+        height: 70px;
+        display: flex;
+   border-radius: 50%;
+        background-color: #007bff; /* Primary color */
+        color: #fff; /* Text color */
+        cursor: pointer;
+        
+    }
+    #add span{line-height: 70px;}
+</style>
+</head>
+
+<body style="background-color: #f0ecff">
+  <div class="container"  id="notifications" style="position: absolute; z-index: 9999; bottom: 0;left: 50%;transform: translate(-50%, 0);">
+   
+  </div>
+  <div class="container">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow rounded pt-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">GesichtBook</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+          </ul>
+          <div class="d-flex justify-content-end w-100 gab-1" id="log-buttons">
+            <button id="login" type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal"
+              data-bs-target="#loginModal">
+              Login
+            </button>
+            <button id="register" type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+              data-bs-target="#registerModal">
+              Register
+            </button>
+            <!-- <span class="me-2"><strong>username</strong></span> -->
+            <button id="logout" type="button" class="btn btn-outline-danger me-2" onclick="logout()">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- // Navigation Bar // -->
+  </div>
+  <!-- Main Content Bar -->
+  <div class="container mt-5">
+    <!-- Posts -->
+    <div id="posts"></div>
+    <!-- // Posts // -->
+  </div>
+  <!-- // Main Content Bar // -->
+
+<!-- Add a new Post -->
+<div id="add" data-bs-toggle="modal"
+data-bs-target="#addNewPostModal" class="rounded-circle bg-primary text-light">
+  <span>+</span></div>
+<!--// Add a new Post// -->
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="ModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ModalLabel1">Login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="username" class="col-form-label">Username</label>
+              <input type="text" class="form-control" id="username" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="col-form-label">Password</label>
+              <input type="password" class="form-control" id="password" />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="login()">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- // Login Modal // -->
+  <!-- register Modal -->
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="ModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ModalLabel2">
+            Register a new User
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="Profile-image" class="col-form-label">Profile-Image</label>
+              <input type="file" class="form-control" id="Profile-image" />
+            </div>
+            <div class="mb-3">
+              <label for="username-rgister" class="col-form-label">Username</label>
+              <input type="text" class="form-control" id="username-register" />
+            </div>
+            <div class="mb-3">
+              <label for="password-rgister" class="col-form-label">Password</label>
+              <input type="password" class="form-control" id="password-register" />
+            </div>
+            <div class="mb-3">
+              <label for="name-rgister" class="col-form-label">Name</label>
+              <input type="text" class="form-control" id="name-register" />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="register()">
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- // register Modal // -->
+  <!-- Add an new Post Modal -->
+  <div class="modal fade" id="addNewPostModal" tabindex="-1" aria-labelledby="ModalLabel3" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ModalLabel3">
+            Add an new Post
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="postCreate">
+          
+            <div class="mb-3">
+              <label for="title" class="col-form-label">Title</label>
+              <input type="text" class="form-control" id="post-title" name="title" />
+            </div>
+            <div class="mb-3">
+              <label for="post-content" class="col-form-label">post-content</label>
+              <textarea class="form-control" id="body" style="resize: none;" name="body"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="post-image" class="col-form-label">Image</label>
+              <input type="file" class="form-control" id="image" name="image"/>
+            </div>
+           
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="createNewPost()">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- // Add an new Post Modal // -->
+</body>
+<script>
+  let logoutBtn =document.querySelector("#logout")
+  // to get all posts
+  getPosts()
+  function getPosts(){
+    axios
+    .get("https://tarmeezacademy.com/api/v1/posts")
+    .then(function (response) {
+      // handle success
+      let posts = response.data.data;
+
+      for (const post of posts) {
+        let content = ` <!-- Post -->
+        <div class="card shadow my-3">
+          <div class="card-header">
+            <img src="${post.author.profile_image}" alt="avatar-profile"  style="width: 50px; height: 50px;" class=" rounded-circle border border-3">
+          <strong>${post.author.username}</strong>
+        </div>
+          <div class="card-body">
+           <img src="${post.image}" alt="" class="img-fluid w-100">
+           <h6 class="text-secondary mt-1">${post.created_at}</h6>
+           <h5 class="">${post.title}</h5>
+           <p>${post.body}</p>
+           <hr>
+           <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+              </svg>
+            <span>${post.comments_count} comments
+              <span class="tags"> </span>
+              </span>
+           </div>
+            
+          </div>
+        </div>
+        <!-- // Post // -->`;
+        document.getElementById("posts").innerHTML += content;
+        //   let tags =document.querySelector('.tags')
+        //   for(tag of tags){
+        //     let tags =response.data.tags
+        // console.log(tags)
+        //   let tagsContent =`<spann class="text-light rounded bg-dark">${tag.name}</spann`
+        //     tags.appendChild(tags)
+        // }
+      }
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+  }
+
+  function login() {
+    let username = document.querySelector("#username").value;
+    let password = document.querySelector("#password").value;
+    axios
+      .post("https://tarmeezacademy.com/api/v1/login", {
+        username: username,
+        password: password,
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+          // Hide the modal using Bootstrap's Modal instance
+      let modalElement = document.querySelector("#loginModal");
+      let modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      } else {
+        let newModalInstance = new bootstrap.Modal(modalElement);
+        newModalInstance.hide();
+      }
+      showNotification("logged in is successfully")
+        isLoggedIn();
+      })
+      .catch((error) => {
+    
+        showNotification(error.response.data.message,"danger")
+      }
+      );
+  }
+  // to test if the User loggrd in or not
+  function isLoggedIn() {
+    if (localStorage.getItem("token") == null) {
+      document.querySelector("#login").style.display = "inline-block";
+      document.querySelector("#register").style.display = "inline-block";
+      logoutBtn.style.display = "none ";
+      document.querySelector("#add").style.display = "none"
+      if(document.querySelector('#userSpan')){document.querySelector('#userSpan').style.display = "none ";}
+      
+      
+    } else {
+     
+      document.querySelector("#login").style.display = "none ";
+      document.querySelector("#register").style.display = "none ";
+      logoutBtn.style.display = "inline-block";
+      userName()
+      document.querySelector("#add").style.display = "flex"
+    }
+  }
+  function userName(){
+    let user =JSON.parse(localStorage.getItem("user"))
+    let content = `<span id="userSpan" class="me-2"><strong>${user.username}</strong></span>`
+    logoutBtn.insertAdjacentHTML('beforebegin', content);
+  }
+
+  isLoggedIn();
+
+  // to logout
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    showNotification("logged out is successfully ")
+    isLoggedIn();
+  }
+  
+   // to register a new User
+  function register() {
+    let username = document.querySelector("#username-register").value;
+    let password = document.querySelector("#password-register").value;
+    let name = document.querySelector("#name-register").value;
+    axios.post("https://tarmeezacademy.com/api/v1/register", {
+        username: username,
+        password: password,
+        name: name,
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        showNotification("register is successfully ")
+        const modal = document.querySelector("#registerModal");
+        const modatInstance = bootstrap.Modal.getInstance(modal);
+        modatInstance.hide();
+        isLoggedIn();
+      })
+      .catch((error) => showNotification(error.response.data.message,"danger"));
+  }
+  // to show Notifications
+  function showNotification(message,type="success"){
+    let content = `
+<div class="alert alert-${type} alert-dismissible" role="alert">
+  <div>${message}</div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+  ` 
+document.querySelector('#notifications').innerHTML = content
+  setTimeout(() => {
+    document.querySelector('#notifications').innerHTML =""
+    }, 1000);
+  
+  
+ }
+ function createNewPost(){
+  // let postTitle = document.querySelector("#post-title").value
+  //   let postContent = document.querySelector("#post-content").value
+  //   let postImage = document.querySelector("#post-image").files[0]
+    let formData = new FormData(document.getElementById('postCreate'))
+    let token = localStorage.getItem('token')
+    // formData.append('title',postTitle)
+    // formData.append('body',postContent)
+    // formData.append('image',postImage)
+    axios.post("https://tarmeezacademy.com/api/v1/posts",formData,{
+      'headers':{ 
+        'Authorization':`Bearer ${token}`,
+      'Content-Type':'multipart/form-data'
+    }
+     
+
+    })
+      .then((response) => {
+        showNotification("a new Post has been successfully created ")
+        
+        const modal = document.querySelector("#addNewPostModal");
+        const modatInstance = bootstrap.Modal.getInstance(modal);
+        modatInstance.hide();
+        window.location.reload();
+        
+      })
+      .catch((error) => showNotification(error.response.data.message,"danger"));
+  }
+ 
+</script>
+
+</html>

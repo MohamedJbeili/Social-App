@@ -1,6 +1,6 @@
 let logoutBtn =document.querySelector("#logout")
 
-
+const axios = require('axios');
 
 function login() {
     let username = document.querySelector("#username").value;

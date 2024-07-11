@@ -328,6 +328,7 @@
   </body>
   <script src="./main.js"></script>
   <script>
+    import axios from 'axios';
      let params = new URLSearchParams(document.location.search);
      let postId = params.get("postId");
      let user = getCurrentUser()
